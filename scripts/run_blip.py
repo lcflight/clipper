@@ -18,9 +18,7 @@ args = parser.parse_args()
 # Split the image_urls argument into a list of URLs
 image_paths = args.image_paths.split(',')
 
-print("")
-print(f"Processing {len(image_paths)} images...")
-print("")
+captions = []  # Initialize a list to store captions
 
 # Process each image file path
 for image_path in image_paths:
@@ -33,9 +31,10 @@ for image_path in image_paths:
     # Generate the caption with adjusted parameters for more detailed descriptions
     with torch.no_grad():
         outputs = model.generate(**inputs, max_new_tokens=150, num_beams=5, temperature=0.9, do_sample=True)
-        
+
     # Decode the generated caption
     caption = processor.decode(outputs[0], skip_special_tokens=True)
-    print(f"Generated Caption for {image_path}:")
-    print(caption)
-    print("")
+    captions.append(caption)  # Add the caption to the list
+
+# Print all captions as a comma-separated list
+print(", ".join(captions))
