@@ -3,10 +3,16 @@ import process from "process";
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_CLIPPER_API_KEY });
 
-export default async function aiNormalize(promptArray) {
+export default async function generateTags(promptArray): Promise<string[]> {
   console.log("promptArray:", promptArray);
   const prompt = promptArray.join("\n");
-  const completion = await caller(prompt);
+  const completion = (await caller(prompt)).choices[0].message.content?.split(
+    ","
+  );
+  if (!completion) {
+    console.warn("Tags could not be generated.");
+    return [];
+  }
   return completion;
 }
 
